@@ -129,7 +129,7 @@ before(function(done) {
 ## Client-To-Server Events
 ---
 
-The client-side test hooks are exposed by the `ghoulie` npm module.  Your client-side application should require this module, and the server-side application uses `ghoulies` to spawn the client browser and listen to the events emitted by `ghoulie`.
+The client-side API is exposed by the <a href="https://github.com/jaxcore/ghoulie">ghoulie</a> npm module.  Your client-side application will need to include this module and emit events after important actions take place (eg. after data is loaded or a portion of your app is rendered).  The unit tests use `ghoulies` to spawn the client browser and listen to the events emitted by `ghoulie`.
 
 Somewhere in your JavaScript client-side code emit a client event:
 
@@ -143,11 +143,9 @@ var arg2 = "abc";
 ghoulie.emit('CLIENT_LOADED', arg1, arg2);
 ```
 
-Somewhere in your ghoulie unit test `/test/ghoulies/myghoulie.test.js` listen for the client event:
+Then add an event listener in your unit test `/test/ghoulies/myghoulie.test.js` to listen for the client event:
 
 ```
-
-
 define("a ghoulie test", function() {
 	it("listens for client events", function(done) {
 		
@@ -167,14 +165,13 @@ define("a ghoulie test", function() {
 		ghoulie.init();
 	
 	});
-})
-
+});
 ```
 
 ## Server-to-Client Events
 ---
 
-You can also emit events from within a ghoulie test and have your client listen and respond to them.  In this manner you can force the client to reload data from the server:
+You can also emit events from within a ghoulie test and have your client listen and respond to them.  In this manner you can force the client to reload data from the server, render a new part of the application, or some other action:
 
 Somewhere in your unit test emit an event:
 
@@ -196,7 +193,7 @@ ghoulie.on('RELOAD_SOME_DATA', function() {
 ### Ghoulies NPM Commands
 ---
 
-The ghoulies commands are:
+The ghoulies npm commands are:
 
 ```
 npm run ghoulies          # runs the build, then runs the tests
@@ -230,52 +227,8 @@ This example is for <a href="http://webpack.github.io/">webpack</a> and <a href=
 ...
 ```
 
-It is recommended to experiment with running `ghoulies:build` and `ghoulies:test` independently and making sure they work properly before trying `ghoulies` and `ghoulies:watch`
+It is recommended to experiment with running `ghoulies:build` and `ghoulies:test` independently and be sure sure they work properly before trying `ghoulies` and `ghoulies:watch`
 
-As defined above, the `ghoulies:watch` will re-run only when the ghoulies test script changes.
-
-# Full Example 
-
-Example of how to write a test script (eg. `/test/ghoulies/myghoulie.test.js`):
-
-```
-var chai = require('chai');
-var expect = chai.expect;
-
-// include ghoulies
-var ghoulies = require('ghoulies');
-
-// url of your local development server
-var url = "http://localhost:1337";
-
-before(function (done) {	
-	 ghoulies.client({
-		url: url,
-		globals: true,		// make window, document, and jquery global objects
-		jquery: true		// (optional) include jquery if it isn't included in the app
-	}, function (window, ghoulie) {
-		done();
-	});
-});
-
-describe('ghoulies', () => {
-	it('loads a headless client and renders my application', (done) => {
-	
-		// ghoulies exposes a headless browser window object
-		expect(typeof window).to.be.equal('object');
-		
-		// use jQuery to inspect the DOM
-		var myAppNode = $('#myapp');
-		expect(myAppNode.length).to.be.equal(1);
-		
-		// initialize ghoulie at the end of the first test
-		ghoulie.init();
-		
-		done();
-	});
-});
-
-```
 
 ## Examples
 ---
