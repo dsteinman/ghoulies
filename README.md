@@ -97,11 +97,11 @@ In a ghoulie test you can use JQuery or standard DOM operations to just as you w
 
 Ghoulies requires your webserver be fully booted and ready to go before the test proceeds.  Ghoulies also exposes an EventEmitter to capture when the server is loaded.
 
-Somewhere in your NodeJS server code:
+If using ExpressJS, emit an event after the http server is running:
 
 ```
-var express = require('express')
-var app = express()
+var express = require('express');
+var app = express();
 
 // include ghoulies
 var ghoulies = require('ghoulies');
@@ -115,12 +115,13 @@ app.listen(8000, function () {
 
 ```
 
-In your `/test/ghoulies/config.js` bootstrap script, listen for the server event before continuing with the rest of the test suite:
+Create a unit test bootstrap script named `/test/ghoulies/config.js`, it listens for the 'SERVER_LOADED' event before continuing with the rest of the test suite:
 
 ```
 before(function(done) {
-	ghoulies.on('SERVER_LOADED', function(app) {
-		ghoulies.app = app;
+	ghoulies.once('SERVER_LOADED', function(app) {
+		// store a reference to the app for use in the tests
+		ghoulies.app = app;		
 		done();
 	});
 });
@@ -143,14 +144,14 @@ var arg2 = "abc";
 ghoulie.emit('CLIENT_LOADED', arg1, arg2);
 ```
 
-Then add an event listener in your unit test `/test/ghoulies/myghoulie.test.js` to listen for the client event:
+Then add an event listener in your unit test `/test/ghoulies/myghoulie.test.js` to listen for the 'CLIENT_LOADED' event:
 
 ```
 define("a ghoulie test", function() {
 	it("listens for client events", function(done) {
 		
 		// wait for client event
-		ghoulie.on('CLIENT_LOADED', function()arg1, arg2, ...) {
+		ghoulie.once('CLIENT_LOADED', function()arg1, arg2, ...) {
 			
 			// output useful data in the terminal
 			ghoulie.log('CLIENT_LOADED!', arg1, arg2);
@@ -161,7 +162,7 @@ define("a ghoulie test", function() {
 			done();
 		});
 		
-		// initialize ghoule at the end of the first test
+		// initialize ghoulie at the end of the first test
 		ghoulie.init();
 	
 	});
@@ -173,20 +174,38 @@ define("a ghoulie test", function() {
 
 You can also emit events from within a ghoulie test and have your client listen and respond to them.  In this manner you can force the client to reload data from the server, render a new part of the application, or some other action:
 
-Somewhere in your unit test emit an event:
+Somewhere in your unit test, emit an event:
 
 ```
-ghoulie.emit('RELOAD_SOME_DATA')'
+ghoulie.emit('RELOAD_SOME_DATA');
 ```
 
 Somewhere in your client app, listen to the event:
 
 ```
-ghoulie.on('RELOAD_SOME_DATA', function() {
+ghoulie.once('RELOAD_SOME_DATA', function() {
 	
 	// fetch data from server
-	$.ajax('/api/data', ...);
+	$.ajax({url: "/api/data", success: function(result) {
+        
+        // emit new event
+        ghoulie.emit('RELOADED_DATA', result);
+        
+    }});
 	
+});
+```
+
+Update your unit test to listen to the 'RELOADED_DATA' event:
+
+```
+ghoulie.on('RELOADED_DATA', function(result) {
+	
+	// perform test on the data
+	expect(typeof result).to.be.equal('object');
+	
+	// can also perform DOM/JQuery commands to see if client rendered the new data
+	$(...)
 });
 ```
 
@@ -227,7 +246,7 @@ This example is for <a href="http://webpack.github.io/">webpack</a> and <a href=
 ...
 ```
 
-It is recommended to experiment with running `ghoulies:build` and `ghoulies:test` independently and be sure sure they work properly before trying `ghoulies` and `ghoulies:watch`
+It is recommended to experiment with running `ghoulies:build` and `ghoulies:test` independently and be sure they work properly before trying `ghoulies` and `ghoulies:watch`
 
 
 ## Examples
