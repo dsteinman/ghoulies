@@ -2,7 +2,7 @@
   "name": "ghoulies",
   "private": false,
   "version": "0.0.1",
-  "description": "mocha integration test helper",
+  "description": "a full-stack integration testrunner",
   "keywords": [],
   "dependencies": {
     "chalk": "^1.1.3",
@@ -14,7 +14,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/jaxcore/ghoulies"
   },
   "author": "jaxcore",
   "license": "MIT"
