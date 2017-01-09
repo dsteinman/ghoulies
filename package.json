@@ -1,0 +1,21 @@
+{
+  "name": "ghoulies",
+  "private": false,
+  "version": "0.0.1",
+  "description": "mocha integration test helper",
+  "keywords": [],
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "event-emitter": "^0.3.4",
+    "jsdom": "^9.9.1"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "jaxcore",
+  "license": "MIT"
+}
