@@ -4,7 +4,7 @@ var EventEmitter = require('events').EventEmitter;
 
 function Ghoulies() {
 	this.constructor();
-	this.version = '0.0.1';
+	this.version = '0.0.2';
 	this.log({ghoulieName: 'ghoulies ' + this.version}, '(c) 2016 Jaxcore', 'MIT Licensed');
 }
 Ghoulies.prototype = Object.create(EventEmitter.prototype);

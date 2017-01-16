@@ -76,7 +76,7 @@ describe('ghoulies', () => {
 		// use jQuery to inspect the dom
 		var myAppNode = $('#myapp');
 		expect(myAppNode.length).to.be.equal(1);
-		expect(myAppNode0].nodeName).to.be.equal('DIV');
+		expect(myAppNode.get(0)].nodeName).to.be.equal('DIV');
 		
 		// initialize ghoulie at the end of the first test
 		ghoulie.init();

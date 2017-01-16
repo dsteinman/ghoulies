@@ -1,7 +1,7 @@
 {
   "name": "ghoulies",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a full-stack integration testrunner",
   "keywords": [],
   "dependencies": {
