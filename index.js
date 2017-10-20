@@ -81,6 +81,17 @@ Ghoulies.prototype.jsdom = function (options, callback) {
 	});
 };
 
+Ghoulies.prototype.getLogger = function(name) {
+	return (function(n) {
+		return function log() {
+			var args = Array.prototype.slice.call(arguments);
+			args.unshift({ghoulieName:n});
+			Ghoulies.prototype.log.apply(ghoulies, args);
+		}
+	}(name));
+};
+
 var ghoulies = new Ghoulies();
+
 global.__ghoulies = ghoulies;
 module.exports = ghoulies;
