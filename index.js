@@ -5,11 +5,17 @@ var EventEmitter = require('events').EventEmitter;
 function Ghoulies() {
 	this.constructor();
 	this.version = '0.0.2';
-	this.log({ghoulieName: 'ghoulies ' + this.version}, '(c) 2016 Jaxcore', 'MIT Licensed');
+	this._quiet = (process.env.NODE_ENV!=='dev');
 }
 Ghoulies.prototype = Object.create(EventEmitter.prototype);
 Ghoulies.prototype.constructor = EventEmitter;
+Ghoulies.prototype.quiet = function(q) {
+    this._quiet = q;
+};
+
 Ghoulies.prototype.log = function () {
+    if (this._quiet) return;
+
 	var args = Array.prototype.slice.call(arguments);
 	args = args.map(function (arg, index) {
 		if (index === 0 && typeof arg === 'object' && arg.ghoulieName) {
